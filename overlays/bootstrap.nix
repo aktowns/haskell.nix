@@ -134,11 +134,12 @@ in {
                 ++ fromUntil "8.10" "8.10.2"   ./patches/ghc/67738db10010fd28a8e997b5c8f83ea591b88a0e.patch
                 ++ final.lib.optional (versionAtLeast "8.6.4" && versionLessThan "8.8") ./patches/ghc/ghc-no-system-linker.patch
 
-                ++ fromUntil "8.10.2" "8.12"   ./patches/ghc/MR3714-backported-to-8.10.2.patch
+                ++ fromUntil "8.10.2" "8.10.3" ./patches/ghc/MR3714-backported-to-8.10.2.patch
 
                 ++ from      "8.10.1"          ./patches/ghc/ghc-acrt-iob-func.patch
 
-                ++ fromUntil "8.10.1" "8.11"   ./patches/ghc/ghc-8.10-ubxt.patch
+                ++ fromUntil "8.10.1" "8.10.3" ./patches/ghc/ghc-8.10-ubxt.patch
+                ++ fromUntil "8.10.3" "8.11"   ./patches/ghc/ghc-8.10.3-ubxt.patch
                 ++ final.lib.optional (versionAtLeast "8.6.4") ./patches/ghc/Cabal-3886.patch
                 ;
         in ({
@@ -372,6 +373,26 @@ in {
 
                 ghc-patches = ghc-patches "8.10.2";
             };
+            ghc8103 = final.callPackage ../compiler/ghc {
+                extra-passthru = { buildGHC = final.buildPackages.haskell-nix.compiler.ghc8103; };
+
+                bootPkgs = bootPkgs // {
+                  # Not using 8.8 due to https://gitlab.haskell.org/ghc/ghc/-/issues/18143
+                  ghc = final.buildPackages.buildPackages.haskell-nix.compiler.ghc865;
+                };
+                inherit sphinx installDeps;
+
+                buildLlvmPackages = final.buildPackages.llvmPackages_9;
+                llvmPackages = final.llvmPackages_9;
+
+                src-spec = rec {
+                    version = "8.10.3";
+                    url = "https://downloads.haskell.org/~ghc/${version}/ghc-${version}-src.tar.xz";
+                    sha256 = "0cdrdvs5qnqr93cr9zvrlfjv2xr671kjjghnsw4afa4hahcq7p6c";
+                };
+
+                ghc-patches = ghc-patches "8.10.3";
+            };
             # ghc 8.10.2 with patches needed by plutus
             ghc810220201118 = final.callPackage ../compiler/ghc {
                 extra-passthru = { buildGHC = final.buildPackages.haskell-nix.compiler.ghc810220201118; };
@@ -539,9 +560,11 @@ in {
             name = "nix-tools";
             src = final.haskell-nix.sources.nix-tools;
             index-state = final.haskell-nix.internalHackageIndexState;
+            # text 1.2.4.1 is not in hackage yet. TODO remove the constraint when it is.
             cabalProjectLocal = ''
               allow-newer: Cabal:base, cryptohash-sha512:base, haskeline:base
               index-state: ${final.haskell-nix.internalHackageIndexState}
+              constraints: text <1.2.4.1
             '';
             # When building cabal-install (only happens when checking materialization)
             # disable checking of the tools used to avoid infinite recursion.
