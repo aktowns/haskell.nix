@@ -144,6 +144,16 @@ pkgs:
     "tag_c"                              = [ pkgs."taglib" ];
     "taglib_c"                           = [ pkgs."taglib" ];
     "tensorflow"                         = [ pkgs."libtensorflow" ];
+    "tss2-sys"                           = [ pkgs."tpm2-tss" ];
+    "tss2-esys"                          = [ pkgs."tpm2-tss" ];
+    "tss2-fapi"                          = [ pkgs."tpm2-tss" ];
+    "tss2-mu"                            = [ pkgs."tpm2-tss" ];
+    "tss2-tcti-mssim"                    = [ pkgs."tpm2-tss" ];
+    "tss2-tcti-cmd"                      = [ pkgs."tpm2-tss" ];
+    "tss2-tctildr"                       = [ pkgs."tpm2-tss" ];
+    "tss2-tcti-device"                   = [ pkgs."tpm2-tss" ];
+    "tss2-rc"                            = [ pkgs."tpm2-tss" ];
+    "tss2-tcti-swtpm"                    = [ pkgs."tpm2-tss" ];
     "udev"                               = [ pkgs."systemd" ];
     "uuid"                               = [ pkgs."libossp_uuid" ];
     "vte-2.91"                           = [ pkgs."vte_291" ];
